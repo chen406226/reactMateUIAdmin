@@ -9,6 +9,8 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import AddMenu from './Menu/Add'
+
 
 const styles = {
   cardCategoryWhite: {
@@ -43,6 +45,11 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function TableList() {
+  const [open, setOpen] = React.useState(false);
+
+  const doOpen = ()=>{setOpen(true)}
+  const doClose = ()=>{setOpen(false)}
+
   const classes = useStyles();
   return (
     <GridContainer>
@@ -50,7 +57,7 @@ export default function TableList() {
         <Card>
           <CardHeader color="primary">
             {/* <h4 className={classes.cardTitleWhite}>Simple Table</h4> */}
-            <Button className={classes.cardTitleWhite} color="primary">新增根菜单</Button>
+            <Button className={classes.cardTitleWhite} onClick={doOpen} color="primary">新增根菜单</Button>
             {/* <p className={classes.cardCategoryWhite}>
               Here is a subtitle for this table
             </p> */}
@@ -109,6 +116,7 @@ export default function TableList() {
           </CardBody>
         </Card>
       </GridItem>
+      <AddMenu open={open} onClose={doClose}/>
     </GridContainer>
   );
 }
