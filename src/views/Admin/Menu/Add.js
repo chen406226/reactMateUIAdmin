@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -17,8 +17,26 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import API from '@/api'
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+// import { div } from 'prelude-ls';
 
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
+
+function createData(type, key, value) {
+  return {type, key, value };
+}
 
 const useDialogStyles = makeStyles((theme) => ({
     dialogCustomizedWidth: {
@@ -68,6 +86,23 @@ export default function ScrollDialog(props) {
   const [title, setTitle] = useState("新增菜单");
   const [name, setName] = useState("");
   const [path, setPath] = useState("");
+  const classes = useStyles();
+  const [queryList, setQueryList] = useState([]);
+  const queryListRender = () =>{
+    setQueryList(arr=>[...arr])
+  }
+  const pushQueryList = ()=>{
+    queryList.push(createData('query', 'shenme', 'false'))
+    queryListRender()
+  }
+  const changeQueryList = (keys,row) => (event) => {
+    row[keys]= event.target.value
+    queryListRender()
+  };
+  useEffect(() => {
+    queryList.push(createData('query', 'show', 'false'))
+    queryListRender()
+  }, []);
   const [state, setState] = React.useState({
     hidden: false,
     parentId: 0,
@@ -103,6 +138,27 @@ const setStates = (keys) => (event) => {
 
   const formClasses = useFormStyles();
   const dialogClasses = useDialogStyles();
+
+  const save = async () => {
+    let form = {
+      ID: 0,
+      path,
+      name,
+      hidden: state.hidden,
+      parentId: "0",
+      component: state.component,
+      meta: {
+        title: state.title,
+        icon: state.icon,
+        defaultMenu: state.defaultMenu,
+        keepAlive: state.keepAlive
+      },
+      parameters: queryList
+    }
+    API.reqJson(API.URL.addBaseMenu,'post',form).then((res)=>{
+      console.log(res,'rrrrrrrrrr')
+    })
+  }
 
   React.useEffect(() => {
     if (open) {
@@ -149,6 +205,38 @@ const setStates = (keys) => (event) => {
         <FormControlLabel value="top" label="keepAlive"labelPlacement="top"
           control={<Switch checked={state.keepAlive} onChange={handleChange} name="keepAlive"  color="primary" />}
         />
+            <div>
+      <Button variant="contained" color="primary" onClick={pushQueryList}>
+        新增菜单参数
+      </Button>
+      <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>参数类型</TableCell>
+              <TableCell align="center">参数key</TableCell>
+              <TableCell align="center">参数值</TableCell>
+              <TableCell align="center"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {queryList.map((row,index) => (
+              <TableRow key={row.key+index}>
+                <TableCell component="th" scope="row">
+                  <TextField value={row.type} onChange={changeQueryList('type',row)}/>
+                </TableCell>
+                <TableCell align="left" component="th" scope="row">
+                  <TextField value={row.key}  onChange={changeQueryList('key',row)}/>
+                </TableCell>
+                <TableCell align="left">
+                  <TextField value={row.value} onChange={changeQueryList('value',row)}/>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
       </div>
     </form>
         </DialogContent>
