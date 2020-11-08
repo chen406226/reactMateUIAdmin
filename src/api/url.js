@@ -1,5 +1,9 @@
 const url = {
     login: '/base/login',//登录接口
+    GetMenu: '/menu/getMenu',//获取用户动态路由菜单树
+    GetMenuList: '/menu/getMenuList',//分页获取基础menu列表
+    AddBaseMenu: '/menu/addBaseMenu',//新增菜单
+    UpdateBaseMenu: '/menu/updateBaseMenu',//更新菜单
     loginOut: '/user/loginOut.html',//退出登录
     loginCheck: '/user/login/befor.html', //校验用户是否登录
     loginUnlock: '/user/unlock/account.html',      //get 获取解锁短信码  post 提交解锁请求

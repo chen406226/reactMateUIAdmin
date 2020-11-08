@@ -3,15 +3,20 @@ const path = require( 'path' );
 // const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+
 const HappyPack = require('happypack')
 const os = require('os');
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+
+
+
 
 let env = process.env.NODE_ENV||'development'
 
 module.exports = {
    context: __dirname,
    mode: env,
+
 //    entry: './src/index.js',
 //    entry: {
 //        main:["babel-polyfill", './src/index.js']
@@ -25,6 +30,19 @@ module.exports = {
       filename: 'js/[name].js',
       publicPath: '/',
       chunkFilename: 'js/chunk/[name]-[id].common.js'
+   },
+   devServer: {
+      historyApiFallback: true,
+      proxy: {
+        '/api': {
+            target: 'http://localhost:8889',
+            secure: false,
+            changeOrigin: true,
+            pathRewrite: {
+                '^/api': ''
+            },
+        },
+    },
    },
    module: {
       rules: [
