@@ -16,7 +16,7 @@ console.log(hist)
 
 // class Login extends React.Component{
 export default function Login() {
-    const [username, setUsername] = useState('admindd');
+    const [username, setUsername] = useState('admin');
     const [password, setPassword] = useState('123456');
 
     const doLogin = ()=>{
@@ -24,6 +24,8 @@ export default function Login() {
         API.reqJson(API.URL.login,'post',{username,password}).then((res)=>{
             jsCookie.set('token',res.data.Token)
             jsCookie.set('userInfo',res.data.User)
+            localStorage.setItem('token',res.data.Token)
+            localStorage.setItem('userInfo',res.data.User)
             store.dispatch(setUserInfo(res.data.User))
             let red = hist.location.search.match(/^\?redirect=(.*)/)
             if (red) {
@@ -43,7 +45,8 @@ export default function Login() {
                 </Grid>
             </Grid>
             <Paper className="form_paper">
-                    <Grid container spacing={3} alignItems="flex-end">
+                <form action="">
+                    <Grid container spacing={3} >
                         <Grid item xs={3}>
                             <Icon>account_circle </Icon>
                         </Grid>
@@ -62,7 +65,7 @@ export default function Login() {
                                <Button variant="text" color="primary">发送验证码</Button>
                            </Grid>
                        </Grid> */}
-                    <Grid container spacing={3} alignItems="flex-end">
+                    <Grid container spacing={3} >
                         <Grid item xs={3}>
                             <Icon>no_encryption</Icon>
                             {/* <SvgIcon></SvgIcon>   */}
@@ -71,7 +74,7 @@ export default function Login() {
                             <TextField id="input-with-icon-grid"  value={password} onChange={(v)=>{setPassword(v.target.value)}} label="密码" />
                         </Grid>
                     </Grid>
-                    <Grid container spacing={3} alignItems="flex-end">
+                    <Grid container spacing={3}>
                         <Grid item xs={6}>
                             <Button variant="contained" color="primary" onClick={doLogin}>
                                 登录
@@ -81,7 +84,9 @@ export default function Login() {
                             <Button variant="contained" >注册</Button>
                         </Grid>
                     </Grid>
+                </form>
             </Paper>
+
         </div>
     )
 }

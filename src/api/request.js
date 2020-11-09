@@ -41,7 +41,7 @@ service.interceptors.request.use(function (config) {
     store.dispatch(setLoadingStatus(true));
     config.params = Object.assign(config.params || {}, initParam);
     // if (store.state.isCheck) {
-        config.headers['x-token'] = jsCookie.get('token')
+        config.headers['x-token'] = jsCookie.get('token')||localStorage.getItem('token')
     // }
     return config;
 }, function (error) {

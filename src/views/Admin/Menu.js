@@ -2,7 +2,7 @@ import React,{useState,useEffect} from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import API from '@/api'
-import { Button } from "@material-ui/core";
+import { Button,ButtonGroup ,TablePagination} from "@material-ui/core";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -13,7 +13,6 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import AddMenu from './Menu/Add'
 import TableContainer from '@material-ui/core/TableContainer';
-import {TablePagination, } from '@material-ui/core';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -42,7 +41,23 @@ const styles = {
     }
   },
   table: {
-    minWidth: 1100,
+    minWidth: 1700,
+  },
+  wid100: {
+    width: "100px",
+    boxSizing: 'border-box'
+  },
+  wid70: {
+    boxSizing: 'border-box',
+    width: "70px"
+  },
+  wid200: {
+    boxSizing: 'border-box',
+    width: "200px"
+  },
+  wid300: {
+    boxSizing: 'border-box',
+    width: "300px"
   },
   root: {
     '& > *': {
@@ -97,20 +112,33 @@ export default function TableList() {
     })
   }
 
+  const [editData, seteditData] = useState({});
+  const edit = (row)=>{
+    seteditData({...row})
+    doOpen()
+  }
+  const addMenu = ()=>{
+    seteditData({})
+    doOpen()
+  }
+
   React.useEffect(() => {
     getMenuList()
   }, []);
 
 
-  const tableHeadKey = [{label:"ID",ckey:'ID'},
-  {label:"路由Name",ckey:'name'},
-  {label:"路由Page",ckey:'path'},
-  {label:"是否隐藏",ckey:'hidden'},
-  {label:"父节点",ckey:'parentId'},
-  {label:"排序",ckey:'sort'},
-  {label:"文件路径",ckey:'component'},
-  {label:"展示名称",ckey:'title'},
-  {label:"图标",ckey:'icon'}]
+  const tableHeadKey = [
+    // {label:"",ckey:''},
+    // {label:"ID",ckey:'ID'},
+  {label:"路由Name",ckey:'name',class:'wid200'},
+  {label:"路由Page",ckey:'path',class:'wid200'},
+  {label:"是否隐藏",ckey:'hidden',class:'wid100'},
+  {label:"父节点",ckey:'parentId',class:'wid100'},
+  {label:"排序",ckey:'sort',class:'wid70'},
+  {label:"文件路径",ckey:'component',class:'wid200'},
+  {label:"展示名称",ckey:'title',class:'wid200'},
+  {label:"图标",ckey:'icon',class:'wid200'}
+]
 
 
   const classes = useStyles();
@@ -120,7 +148,7 @@ export default function TableList() {
         <Card>
           <CardHeader color="primary">
             {/* <h4 className={classes.cardTitleWhite}>Simple Table</h4> */}
-            <Button className={classes.cardTitleWhite} onClick={doOpen} color="primary">新增根菜单</Button>
+            <Button className={classes.cardTitleWhite} onClick={addMenu} color="primary">新增根菜单</Button>
             {/* <p className={classes.cardCategoryWhite}>
               Here is a subtitle for this table
             </p> */}
@@ -130,24 +158,20 @@ export default function TableList() {
               <Table stickyHeader className={classes.table} aria-label="enhanced table">
                 <TableHead>
                   <TableRow>
+                  <TableCell  className={classes.wid100}><span>ID</span></TableCell>
                     {
                       tableHeadKey.map((item)=>{
-                      return <TableCell key={item.ckey}><span>{item.label}</span></TableCell>
+                      return <TableCell className={classes[item.class]} key={item.ckey}><span>{item.label}</span></TableCell>
                       })
                     }
-                    {/* <TableCell align="center">参数key</TableCell>
-                    <TableCell align="center">参数值</TableCell> */}
-                    {/* <TableCell><span>操作</span></TableCell> */}
+                  <TableCell  className={classes.wid300}>
+                  操作
+                  </TableCell>
                   </TableRow>
                 </TableHead>
-                {/* <TableBody>
-                <TableRow>
-                        sfd
-                      </TableRow>
-                </TableBody> */}
                 <TableBody>
                   {menuList.map((row,index) => {
-                    return (<TableRow key={index}>
+                    return (<Row edit={edit} row={row} tableHeadKey={tableHeadKey} level={0} key={index}>
                       {
                         tableHeadKey.map((ro,ind)=>{
                           let key = ro.ckey
@@ -170,12 +194,9 @@ export default function TableList() {
                           }
                         })
                       }
-                    </TableRow>)
+                    </Row>)
 
                   })}
-                    {/* <TableRow>
-                      操作
-                    </TableRow> */}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -191,45 +212,8 @@ export default function TableList() {
           </CardBody>
         </Card>
       </GridItem>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card plain>
-          <CardHeader plain color="primary">
-            <h4 className={classes.cardTitleWhite}>
-              Table on Plain Background
-            </h4>
-            <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
-            </p>
-          </CardHeader>
-          <CardBody>
-            {/* <Table
-              tableHeaderColor="primary"
-              tableHead={["ID", "Name", "Country", "City", "Salary"]}
-              tableData={[
-                ["1", "Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
-                ["2", "Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
-                ["3", "Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
-                [
-                  "4",
-                  "Philip Chaney",
-                  "$38,735",
-                  "Korea, South",
-                  "Overland Park"
-                ],
-                [
-                  "5",
-                  "Doris Greene",
-                  "$63,542",
-                  "Malawi",
-                  "Feldkirchen in Kärnten"
-                ],
-                ["6", "Mason Porter", "$78,615", "Chile", "Gloucester"]
-              ]}
-            /> */}
-          </CardBody>
-        </Card>
-      </GridItem>
-      <AddMenu open={open} onClose={doClose}/>
+
+      <AddMenu data={editData} open={open} onClose={doClose}/>
     </GridContainer>
   );
 }
@@ -241,10 +225,18 @@ const useRowStyles = makeStyles({
     },
   },
   table:{
-    minWidth:670
+    minWidth:1700,
+    maxHeight:200
+  },
+  inl:{
+    display:'inline-block'
   },
   wid100: {
     width: "100px",
+    boxSizing: 'border-box'
+  },
+  wid300: {
+    width: "300px",
     boxSizing: 'border-box'
   },
   wid70: {
@@ -258,14 +250,24 @@ const useRowStyles = makeStyles({
 });
 
 function Row(props) {
-  const { row } = props;
+  const { row,level,tableHeadKey } = props;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+  let children =[]
+  if (row.children) {
+    children =row.children
+  }
+
+  const edit= ()=>{
+    props.edit(row)
+  }
 
   return (
     <React.Fragment>
       <TableRow className={classes.root}>
-        <TableCell className={classes.wid70}>
+      <TableCell className={classes.wid100}>
+          {
+            children.length>0?
           <IconButton
             aria-label="expand row"
             size="small"
@@ -273,25 +275,20 @@ function Row(props) {
             onClick={() => setOpen(!open)}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
+          </IconButton>:null
+          }
+          {row['ID']}
         </TableCell>
-        <TableCell className={classes.wid200} component="th" scope="row">
-          {row.name}
-        </TableCell>
-        <TableCell className={classes.wid100} align="right">
-          {row.calories}
-        </TableCell>
-        <TableCell className={classes.wid100} align="right">
-          {row.fat}
-        </TableCell>
-        <TableCell className={classes.wid100} align="right">
-          {row.carbs}
-        </TableCell>
-        <TableCell className={classes.wid100} align="right">
-          {row.protein}
+        {props.children}
+        <TableCell  className={classes.wid300}>
+          <ButtonGroup variant="contained" aria-label="contained primary button group">
+            <Button>+子菜单</Button>
+            <Button color="primary" onClick={edit}>编辑</Button>
+            <Button color="secondary">删除</Button>
+          </ButtonGroup>
         </TableCell>
       </TableRow>
-      {row.children && row.children.length > 0 ? (
+      {children.length > 0 ? (
         <TableRow>
           <TableCell
             style={{
@@ -300,32 +297,37 @@ function Row(props) {
               paddingLeft: 0,
               paddingRight: 0
             }}
-            colSpan={6}
+            colSpan={10}
           >
             <Collapse in={open} timeout="auto" unmountOnExit>
               {/* <Box margin={1}> */}
-              <Table aria-label="collapsible table">
-                {/* <TableHead>
-                    <TableRow>
-                      <TableCell>Date</TableCell>
-                      <TableCell>Customer</TableCell>
-                      <TableCell align="right">Amount</TableCell>
-                      <TableCell align="right">Total price ($)</TableCell>
-                    </TableRow>
-                  </TableHead> */}
-                {/* <TableHead className={classes.hidden}>
-                  <TableRow>
-                    <TableCell  className={classes.wid70}/>
-                    <TableCell className={classes.wid200}>Dessert (100g serving)</TableCell>
-                    <TableCell className={classes.wid100} align="right">Calories</TableCell>
-                    <TableCell className={classes.wid100} align="right">Fat&nbsp;(g)</TableCell>
-                    <TableCell className={classes.wid100} align="right">Carbs&nbsp;(g)</TableCell>
-                    <TableCell className={classes.wid100} align="right">Protein&nbsp;(g)</TableCell>
-                  </TableRow>
-                </TableHead> */}
+              <Table  className={classes.table} aria-label="enhanced table">
                 <TableBody>
-                  {row.children.map((historyRow, iii) => (
-                    <Row row={historyRow} level={level+1} key={iii}></Row>
+                  {children.map((historyRow, iii) => (
+                    <Row edit={props.edit} tableHeadKey={tableHeadKey} row={historyRow} level={level+1} key={iii}>
+                      {
+                        tableHeadKey.map((ro,ind)=>{
+                          let key = ro.ckey
+                          if (key == 'hidden') {
+                            return <TableCell className={classes[ro.class]+' '+classes.inl}  key={key}>
+                              <span>{historyRow[key] ? '是' : '否'}</span>
+                            </TableCell>
+                          } else if (key == 'title') {
+                            return <TableCell className={classes[ro.class]+' '+classes.inl} key={key}>
+                              <span>{historyRow['meta'][key]}</span>
+                            </TableCell>
+                          } else if (key == 'icon') {
+                            return <TableCell className={classes[ro.class]+' '+classes.inl} key={key}>
+                              <span>{historyRow['meta'][key]}</span>
+                            </TableCell>
+                          }else{
+                            return <TableCell className={classes[ro.class]+' '+classes.inl} key={key}>
+                              <span>{historyRow[key]}</span>
+                            </TableCell>
+                          }
+                        })
+                      }
+                    </Row>
                   ))}
                 </TableBody>
               </Table>

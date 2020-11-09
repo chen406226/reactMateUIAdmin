@@ -81,13 +81,16 @@ const DialogTitlestyles = (theme) => ({
   });
 
 export default function ScrollDialog(props) {
-    const {open,onClose} = props
+    const {open,onClose,data} = props
   const [scroll, setScroll] = React.useState('paper');
   const [title, setTitle] = useState("新增菜单");
   const [name, setName] = useState("");
   const [path, setPath] = useState("");
   const classes = useStyles();
   const [queryList, setQueryList] = useState([]);
+
+
+
   const queryListRender = () =>{
     setQueryList(arr=>[...arr])
   }
@@ -113,6 +116,40 @@ export default function ScrollDialog(props) {
     defaultMenu: false,
     keepAlive: false
   });
+  const init = ()=>{
+    const {hidden= false,
+      parentId= '0',
+      meta={
+      },
+      name='',
+      component= '',
+      sort= 0, 
+      path='',
+      parameters =[],
+      } = data
+      const {
+        keepAlive= false,defaultMenu= false,icon= 'user', title='展示名称',
+      } = meta
+    if (data.ID) {
+      setTitle('编辑菜单')
+    }else{
+      setTitle('新增菜单')
+    }
+    setName(name)
+    setPath(path)
+    let obj ={
+      hidden,
+      parentId,
+      component, 
+      title, 
+      icon, 
+      sort,
+      defaultMenu,
+      keepAlive
+    }
+    setQueryList(parameters)
+    setState(obj)
+  }
   const handleChange = (event) => {
       console.log(event.target)
       setState({ ...state, [event.target.name]: event.target.checked });
@@ -167,7 +204,10 @@ const setStates = (keys) => (event) => {
         descriptionElement.focus();
       }
     }
-  }, [open]);
+    console.log(props.data,'dddddd')
+  init()
+
+  }, [open,data]);
 
   return (
     <div>
