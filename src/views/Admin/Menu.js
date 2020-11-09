@@ -19,6 +19,14 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import PropTypes from "prop-types";
+import Box from "@material-ui/core/Box";
+import Collapse from "@material-ui/core/Collapse";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 
 const styles = {
   cardCategoryWhite: {
@@ -35,6 +43,11 @@ const styles = {
   },
   table: {
     minWidth: 1100,
+  },
+  root: {
+    '& > *': {
+      borderBottom: 'unset',
+    },
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -220,3 +233,126 @@ export default function TableList() {
     </GridContainer>
   );
 }
+
+const useRowStyles = makeStyles({
+  root: {
+    '& > *': {
+      borderBottom: 'unset',
+    },
+  },
+  table:{
+    minWidth:670
+  },
+  wid100: {
+    width: "100px",
+    boxSizing: 'border-box'
+  },
+  wid70: {
+    boxSizing: 'border-box',
+    width: "70px"
+  },
+  wid200: {
+    boxSizing: 'border-box',
+    width: "200px"
+  }
+});
+
+function Row(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
+  const classes = useRowStyles();
+
+  return (
+    <React.Fragment>
+      <TableRow className={classes.root}>
+        <TableCell className={classes.wid70}>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            style={{transform: `translateX(${level*6}px)`}}
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell className={classes.wid200} component="th" scope="row">
+          {row.name}
+        </TableCell>
+        <TableCell className={classes.wid100} align="right">
+          {row.calories}
+        </TableCell>
+        <TableCell className={classes.wid100} align="right">
+          {row.fat}
+        </TableCell>
+        <TableCell className={classes.wid100} align="right">
+          {row.carbs}
+        </TableCell>
+        <TableCell className={classes.wid100} align="right">
+          {row.protein}
+        </TableCell>
+      </TableRow>
+      {row.children && row.children.length > 0 ? (
+        <TableRow>
+          <TableCell
+            style={{
+              paddingBottom: 0,
+              paddingTop: 0,
+              paddingLeft: 0,
+              paddingRight: 0
+            }}
+            colSpan={6}
+          >
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              {/* <Box margin={1}> */}
+              <Table aria-label="collapsible table">
+                {/* <TableHead>
+                    <TableRow>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Customer</TableCell>
+                      <TableCell align="right">Amount</TableCell>
+                      <TableCell align="right">Total price ($)</TableCell>
+                    </TableRow>
+                  </TableHead> */}
+                {/* <TableHead className={classes.hidden}>
+                  <TableRow>
+                    <TableCell  className={classes.wid70}/>
+                    <TableCell className={classes.wid200}>Dessert (100g serving)</TableCell>
+                    <TableCell className={classes.wid100} align="right">Calories</TableCell>
+                    <TableCell className={classes.wid100} align="right">Fat&nbsp;(g)</TableCell>
+                    <TableCell className={classes.wid100} align="right">Carbs&nbsp;(g)</TableCell>
+                    <TableCell className={classes.wid100} align="right">Protein&nbsp;(g)</TableCell>
+                  </TableRow>
+                </TableHead> */}
+                <TableBody>
+                  {row.children.map((historyRow, iii) => (
+                    <Row row={historyRow} level={level+1} key={iii}></Row>
+                  ))}
+                </TableBody>
+              </Table>
+              {/* </Box> */}
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      ) : null
+      }
+    </React.Fragment>
+  );
+}
+
+// Row.propTypes = {
+//   row: PropTypes.shape({
+//     calories: PropTypes.string.isRequired,
+//     carbs: PropTypes.number.isRequired,
+//     fat: PropTypes.number.isRequired,
+//     history: PropTypes.arrayOf(
+//       PropTypes.shape({
+//         amount: PropTypes.number.isRequired,
+//         customerId: PropTypes.string.isRequired,
+//         date: PropTypes.string.isRequired
+//       })
+//     ).isRequired,
+//     name: PropTypes.string.isRequired,
+//     price: PropTypes.number.isRequired,
+//     protein: PropTypes.number.isRequired
+//   }).isRequired
+// };
