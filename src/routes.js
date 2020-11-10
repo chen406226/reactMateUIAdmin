@@ -32,6 +32,7 @@ const DashboardPage = lazy(() => import(/* webpackChunkName: "Dashboard" */'./vi
 // import UserProfile from "views/UserProfile/UserProfile.js";
 const UserProfile = lazy(() => import(/* webpackChunkName: "UserProfile" */'./views/UserProfile/UserProfile.js'))
 const AdminMenu = lazy(() => import(/* webpackChunkName: "AdminMenu" */'./views/Admin/Menu.js'))
+const AdminAuthority = lazy(() => import(/* webpackChunkName: "AdminMenu" */'./views/Admin/Authority.js'))
 import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
@@ -69,6 +70,13 @@ const dashboardRoutes = [
       rtlName: "لوحة القيادة",
       icon: Assignment,
       component: AdminMenu,
+      layout: "/admin"
+    },{
+      path: "/authority",
+      name: "角色管理",
+      rtlName: "لوحة القيادة",
+      icon: Person,
+      component: AdminAuthority,
       layout: "/admin"
     }],
     layout: "/admin"
