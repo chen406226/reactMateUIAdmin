@@ -92,7 +92,6 @@ export default function ScrollDialog(props) {
   const [scroll, setScroll] = React.useState('paper');
   const [title, setTitle] = useState("新增菜单");
   const [name, setName] = useState("");
-  const [path, setPath] = useState("");
   const classes = useStyles();
 
 
@@ -100,64 +99,37 @@ export default function ScrollDialog(props) {
     
   }, []);
   const [state, setState] = React.useState({
-    hidden: false,
-    parentId: 0,
-    component: 'wenjianlujing', // 文件路径
-    title: '展示名称', // 展示名称
-    icon: 'user', // 展示名称
-    sort: 0, // 展示名称
-    defaultMenu: false,
-    keepAlive: false
+    parentId: "0",
+    authorityId: "0",
+    authorityName: "普通用户"
   });
 //   const classes = useStyles();
-  const [age, setAge] = React.useState('189');
-  const [openSelect, setOpenSelect] = React.useState(false);
+  const [age, setAge] = React.useState('根角色');
 
   const handleChange = (event) => {
     setAge(event.target.value);
   };
-  const handleSChange = (event) => {
+  const handleSChange = (item) => {
       console.log(event,'eeeeeeee')
-    setAge(event);
-  };
+    setAge(item.label);
+    setState({...state,parentId:item.ckey});
 
-  const handleClose = () => {
-    setOpenSelect(false);
-  };
-
-  const handleOpen = () => {
-    setOpenSelect(true);
+    handleCloseMenu()
   };
   const init = ()=>{
-    const {hidden= false,
-      parentId= '0',
-      meta={
-      },
-      name='',
-      component= '',
-      sort= 0, 
-      path='',
-      parameters =[],
+    const {
+      authorityId="0",
+      authorityName= "根角色"
       } = data
-      const {
-        keepAlive= false,defaultMenu= false,icon= 'user', title='展示名称',
-      } = meta
-    if (data.ID) {
-      setTitle('编辑菜单')
+    if (data.authorityId != 0) {
+      setTitle('编辑角色')
     }else{
-      setTitle('新增菜单')
+      setTitle('新增角色')
     }
     setName(name)
-    setPath(path)
     let obj ={
-      hidden,
-      parentId,
-      component, 
-      title, 
-      icon, 
-      sort,
-      defaultMenu,
-      keepAlive
+      authorityId,
+      authorityName,
     }
     setState(obj)
   }
@@ -184,36 +156,29 @@ const setStates = (keys) => (event) => {
   const dialogClasses = useDialogStyles();
 
   const selectMenuList=[{
-    label:'测试1',
-    ckey:'ces'
+    label:'根角色',
+    ckey:'0'
+},{
+    label:'测试用户',
+    ckey:'888'
 },{
     label:'测试2',
-    ckey:'ces1',
+    ckey:'8881',
     children:[{
         label:'测试子',
-        ckey:'cesz',
+        ckey:'8882',
     }]
   }]
 
   const save = async () => {
-    let form = {
-      ID: 0,
-      path,
-      name,
-      hidden: state.hidden,
-      parentId: "0",
-      component: state.component,
-      meta: {
-        title: state.title,
-        icon: state.icon,
-        defaultMenu: state.defaultMenu,
-        keepAlive: state.keepAlive
-      },
-      parameters: queryList
-    }
-    API.reqJson(API.URL.addBaseMenu,'post',form).then((res)=>{
+    API.reqJson(API.URL.CreateAuthority,'post',state).then((res)=>{
       console.log(res,'rrrrrrrrrr')
-    })
+      onClose()
+    }).catch(()=>{onClose()})
+
+  }
+  const onSave = ()=>{
+    save()
   }
 
   React.useEffect(() => {
@@ -230,12 +195,21 @@ const setStates = (keys) => (event) => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleCloseMenu = () => {
+    let m =_input.querySelector('input')
+    setTimeout(() => {
+      m.blur()
+      
+    }, 50);
+    console.log(_input,m.blur,m.onblur,'iniiiii')
     setAnchorEl(null);
   };
   const handleClickMenu = (event) => {
       console.log(event.currentTarget,'sdff')
     setAnchorEl(event.currentTarget);
   };
+
+  let _input;
+
   const { handleSubmit, control } = useForm();
 //   useFormControl
   return (
@@ -266,11 +240,11 @@ const setStates = (keys) => (event) => {
             </Typography>
         </Grid>
         <Grid item xs={9}>
-        <Button onClick={handleClickMenu}>
+        {/* <Button onClick={handleClickMenu}>
   Open Menu
-</Button>
+</Button> */}
         <FormControl className={classes.formControl} disabled={false}>
-            <TextField ref='sdf' onClick={handleClickMenu} aria-controls="simple-menu" aria-haspopup="true"  defaultValue={age} />
+            <TextField  ref={(c) => _input = c} onClick={handleClickMenu} aria-controls="simple-menu" aria-haspopup="true"  value={age} />
             <Menu
             id="simple-menu"
             anchorEl={anchorEl}
@@ -278,31 +252,12 @@ const setStates = (keys) => (event) => {
             open={Boolean(anchorEl)}
             onClose={handleCloseMenu}
             >
-            <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
-            <MenuItem onClick={handleCloseMenu}>My account</MenuItem>
-            <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
-            </Menu>
-            {/* <Select
-            labelId="demo-controlled-open-select-label"
-            id="demo-controlled-open-select"
-            // control={control}
-            displayEmpty
-            open={openSelect}
-            onClose={handleClose}
-            onOpen={handleOpen}
-            defaultValue={age}
-            value={age}
-            onChange={handleChange}
-            >
-                {
+                              {
                     selectMenuList.map((item,index)=>{
-                        return (<MenuItemChildren click={handleSChange} value={item.ckey} key={item.ckey+index} valu={item.ckey} label={item.label} data={item.children}></MenuItemChildren>)
+                        return (<div key={item.ckey+index}><MenuItemChildren  click={handleSChange} value={item.ckey} valu={item.ckey} item={item} label={item.label} data={item.children}></MenuItemChildren></div>)
                     }) 
                 }
-                <MenuItem value="">
-                    <em>None</em>
-                </MenuItem>
-            </Select> */}
+            </Menu>
         </FormControl>
         </Grid>
         <Grid item xs={3}>
@@ -311,7 +266,7 @@ const setStates = (keys) => (event) => {
             </Typography>
         </Grid>
         <Grid item xs={9}>
-            <TextField value={state.parentId}/>
+            <TextField required name='authorityId' onChange={handleInputChange} value={state.authorityId} />
         </Grid>
         <Grid item xs={3}>
             <Typography variant="h6" component="h6">
@@ -319,7 +274,7 @@ const setStates = (keys) => (event) => {
             </Typography>
         </Grid>
         <Grid item xs={9}>
-            <TextField required id="standard-required" value={name} onChange={handleSetName}/>
+            <TextField required id="standard-required" value={state.authorityName} onChange={handleInputChange}/>
         </Grid>
       </Grid>
 
@@ -332,7 +287,7 @@ const setStates = (keys) => (event) => {
           <Button onClick={onClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={onClose} color="primary">
+          <Button onClick={onSave} color="primary">
             Subscribe
           </Button>
         </DialogActions>
@@ -349,12 +304,20 @@ const useMenuItemChildrenStyles = makeStyles({
     },
     hidden: {
         display:'none'
+    },
+    spanf:{
+      display:'block',
+      width:"100%"
     }
 });
 
+const MenuItemR = React.forwardRef((props, ref) => (
+  <MenuItemChildren {...props} innerRef={ref} />
+));
+
 function MenuItemChildren(props) {
     // 用value会被干掉 udefined
-    const {data,valu,label,level=0,className='',click} = props
+    const {data,valu,label,item={},level=0,className='',click} = props
     const list = data||[]
     const classes = useMenuItemChildrenStyles();
     const [open, setOpen] = useState(false);
@@ -364,7 +327,7 @@ function MenuItemChildren(props) {
 
     const onClick=(e)=>{
         console.log(valu)
-        click(valu)
+        click(item)
     }
 
     return (
@@ -380,7 +343,7 @@ function MenuItemChildren(props) {
                     {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>:null
                 }
-                <span  onClick={onClick}>
+                <span className={classes.spanf} onClick={onClick}>
                     {
                         label
                     }
