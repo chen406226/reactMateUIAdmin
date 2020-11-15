@@ -6,7 +6,19 @@ const url = {
     UpdateBaseMenu: '/menu/updateBaseMenu',//更新菜单
     
     // authority
-    CreateAuthority: 'authority/createAuthority',//更新菜单
+    CreateAuthority: 'authority/createAuthority',//创建角色
+    GetAuthorityList: 'authority/getAuthorityList',//创建角色
+    DeleteAuthority: 'authority/deleteAuthority',//删除角色
+    UpdateAuthority: 'authority/updateAuthority',//更新角色
+    CopyAuthority: 'authority/copyAuthority',//复制角色
+    SetDataAuthority: 'authority/setDataAuthority',//设置角色资源权限
+
+
+
+
+
+
+
     loginOut: '/user/loginOut.html',//退出登录
     loginCheck: '/user/login/befor.html', //校验用户是否登录
     loginUnlock: '/user/unlock/account.html',      //get 获取解锁短信码  post 提交解锁请求

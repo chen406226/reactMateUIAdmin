@@ -17,6 +17,7 @@ import { withStyles ,Select,MenuItem,Grid,FormControl,Menu  } from '@material-ui
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
+import CSelect from 'components/CForm/CSelect.js'
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -38,6 +39,10 @@ const useStyles = makeStyles({
   },
   root: {
       flexGrow:1,
+  },
+  acMenu:{
+    background: 'rebeccapurple',
+    color: '#fff'
   }
 });
 
@@ -88,16 +93,13 @@ const DialogTitlestyles = (theme) => ({
   });
 
 export default function ScrollDialog(props) {
-    const {open,onClose,data} = props
+    const {open,onClose,data,onFinish,authorityOption} = props
   const [scroll, setScroll] = React.useState('paper');
   const [title, setTitle] = useState("新增菜单");
   const [name, setName] = useState("");
   const classes = useStyles();
 
 
-  useEffect(() => {
-    
-  }, []);
   const [state, setState] = React.useState({
     parentId: "0",
     authorityId: "0",
@@ -110,27 +112,54 @@ export default function ScrollDialog(props) {
     setAge(event.target.value);
   };
   const handleSChange = (item) => {
-      console.log(event,'eeeeeeee')
-    setAge(item.label);
+      // console.log(event,'eeeeeeee')
+    // setAge(item.label);
     setState({...state,parentId:item.ckey});
 
-    handleCloseMenu()
+    // handleCloseMenu()
   };
+  const setSelect = (option,id)=>{
+    console.log(option,id)
+
+    let o = option.find((item)=>{
+      if (item.ckey == id) {
+        setAge(item.label)
+      }
+      if (item.children&&item.children.length) {
+        return item.ckey == id || setSelect(item.children,id)
+      }
+      return item.ckey == id
+    })
+    if (o) {
+      return true
+    }
+    return false
+  }
+  // copy
+  const [old, setold] = useState('');
   const init = ()=>{
     const {
-      authorityId="0",
-      authorityName= "根角色"
+      authorityId="",
+      authorityName= "",
+      parentId='0',
+      type='add'
       } = data
-    if (data.authorityId != 0) {
+    if (type == 'edit') {
       setTitle('编辑角色')
-    }else{
+    }else if (type == 'add'){
       setTitle('新增角色')
+    } else{
+      setold(authorityId)
+      setTitle('复制角色')
     }
+    setSelect(authorityOption,parentId)
     setName(name)
     let obj ={
       authorityId,
       authorityName,
+      parentId
     }
+    console.log(obj,'jjjjjssssss')
     setState(obj)
   }
     const handleInputChange = (event) => {
@@ -142,12 +171,6 @@ const setStates = (keys) => (event) => {
     setState({ ...state, [keys]: event.target.value });
   };
 
-  const handleSetName = (event) => {
-    setName(event.target.value);
-  };
-  const handleSetPath = (event) => {
-    setPath(event.target.value);
-  };
 
   const descriptionElementRef = React.useRef(null);
 
@@ -155,24 +178,30 @@ const setStates = (keys) => (event) => {
   const formClasses = useFormStyles();
   const dialogClasses = useDialogStyles();
 
-  const selectMenuList=[{
-    label:'根角色',
-    ckey:'0'
-},{
-    label:'测试用户',
-    ckey:'888'
-},{
-    label:'测试2',
-    ckey:'8881',
-    children:[{
-        label:'测试子',
-        ckey:'8882',
-    }]
-  }]
-
+  // [{label:'根角色',ckey:'0'},{label:'测试2',ckey:'8881',children:[{label:'测试子',ckey:'8882',}]}]
   const save = async () => {
-    API.reqJson(API.URL.CreateAuthority,'post',state).then((res)=>{
+    let url = API.URL.CreateAuthority
+    let p = state
+    if (data.type == 'edit') {
+      url = API.URL.UpdateAuthority
+    }
+    console.log(data,'daddddddddd')
+    if (data.type == 'copy') {
+      url = API.URL.CopyAuthority
+      p={
+        authority:{
+          ...state,
+          dataAuthorityId:data.dataAuthorityId
+        },
+        oldAuthorityId:old
+      }
+    }
+
+    API.reqJson(url,'post',p).then((res)=>{
       console.log(res,'rrrrrrrrrr')
+      if (onFinish) {
+        onFinish()
+      }
       onClose()
     }).catch(()=>{onClose()})
 
@@ -188,10 +217,8 @@ const setStates = (keys) => (event) => {
         descriptionElement.focus();
       }
     }
-    console.log(props.data,'dddddd')
-//   init()
-
-  }, [open,data]);
+    init()
+  }, [open,data,authorityOption]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleCloseMenu = () => {
@@ -204,14 +231,15 @@ const setStates = (keys) => (event) => {
     setAnchorEl(null);
   };
   const handleClickMenu = (event) => {
-      console.log(event.currentTarget,'sdff')
+    if (title == '新增角色') {
+      return
+    }
     setAnchorEl(event.currentTarget);
   };
 
   let _input;
+  console.log('dsfffffffffff')
 
-  const { handleSubmit, control } = useForm();
-//   useFormControl
   return (
     <div>
       {/* <Button onClick={handleClickOpen('paper')}>scroll=paper</Button> */}
@@ -244,7 +272,13 @@ const setStates = (keys) => (event) => {
   Open Menu
 </Button> */}
         <FormControl className={classes.formControl} disabled={false}>
-            <TextField  ref={(c) => _input = c} onClick={handleClickMenu} aria-controls="simple-menu" aria-haspopup="true"  value={age} />
+          <CSelect 
+            disabled={title=='新增角色'}
+            defaultValue={state.parentId}
+            options={authorityOption}
+            onChange={handleSChange}
+            ></CSelect>
+            {/* <TextField disabled={title=='新增角色'}  ref={(c) => _input = c} onClick={handleClickMenu} aria-controls="simple-menu" aria-haspopup="true"  value={age} />
             <Menu
             id="simple-menu"
             anchorEl={anchorEl}
@@ -253,11 +287,11 @@ const setStates = (keys) => (event) => {
             onClose={handleCloseMenu}
             >
                               {
-                    selectMenuList.map((item,index)=>{
-                        return (<div key={item.ckey+index}><MenuItemChildren  click={handleSChange} value={item.ckey} valu={item.ckey} item={item} label={item.label} data={item.children}></MenuItemChildren></div>)
+                    authorityOption.map((item,index)=>{
+                        return (<div key={item.ckey+index}><MenuItemChildren act={data.parentId} click={handleSChange} value={item.ckey} valu={item.ckey} item={item} label={item.label} data={item.children}></MenuItemChildren></div>)
                     }) 
                 }
-            </Menu>
+            </Menu> */}
         </FormControl>
         </Grid>
         <Grid item xs={3}>
@@ -266,7 +300,7 @@ const setStates = (keys) => (event) => {
             </Typography>
         </Grid>
         <Grid item xs={9}>
-            <TextField required name='authorityId' onChange={handleInputChange} value={state.authorityId} />
+            <TextField disabled={data.type=='edit'} required name='authorityId' onChange={handleInputChange} value={state.authorityId} />
         </Grid>
         <Grid item xs={3}>
             <Typography variant="h6" component="h6">
@@ -274,7 +308,7 @@ const setStates = (keys) => (event) => {
             </Typography>
         </Grid>
         <Grid item xs={9}>
-            <TextField required id="standard-required" value={state.authorityName} onChange={handleInputChange}/>
+            <TextField required id="standard-required" name='authorityName' value={state.authorityName} onChange={handleInputChange}/>
         </Grid>
       </Grid>
 
@@ -308,6 +342,9 @@ const useMenuItemChildrenStyles = makeStyles({
     spanf:{
       display:'block',
       width:"100%"
+    },
+    acMenu:{
+      background: 'rebeccapurple',
     }
 });
 
@@ -317,7 +354,7 @@ const MenuItemR = React.forwardRef((props, ref) => (
 
 function MenuItemChildren(props) {
     // 用value会被干掉 udefined
-    const {data,valu,label,item={},level=0,className='',click} = props
+    const {data,valu,label,item={},level=0,className='',click,act} = props
     const list = data||[]
     const classes = useMenuItemChildrenStyles();
     const [open, setOpen] = useState(false);
@@ -332,7 +369,7 @@ function MenuItemChildren(props) {
 
     return (
         <React.Fragment>
-            <MenuItem className={className} style={style} value={valu}>
+            <MenuItem className={className + ' ' + classnames({[classes.acMenu]:act==valu})} style={style} value={valu}>
                 {
                     list.length>0?
                     <IconButton
@@ -351,7 +388,7 @@ function MenuItemChildren(props) {
             </MenuItem>
             {
                 list.map((item,index)=>{
-                    return (<MenuItemChildren level={level+1} click={click} key={valu+index} className={classnames({[classes.show]:open,[classes.hidden]:!open})} valu={item.ckey} label={item.label} data={item.children}>
+                    return (<MenuItemChildren act={act} level={level+1} click={click} key={valu+index} className={classnames({[classes.show]:open,[classes.hidden]:!open})} valu={item.ckey} label={item.label} data={item.children}>
                     </MenuItemChildren>)
                 })
 
