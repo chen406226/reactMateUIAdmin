@@ -1,5 +1,6 @@
 const url = {
     login: '/base/login',//登录接口
+
     GetMenu: '/menu/getMenu',//获取用户动态路由菜单树
     GetMenuList: '/menu/getMenuList',//分页获取基础menu列表
     AddBaseMenu: '/menu/addBaseMenu',//新增菜单
@@ -13,8 +14,13 @@ const url = {
     CopyAuthority: 'authority/copyAuthority',//复制角色
     SetDataAuthority: 'authority/setDataAuthority',//设置角色资源权限
 
-
-
+    // user
+    Register: 'user/register', // 注册后台用户
+    ChangePassword: 'user/changePassword', // 修改密码
+    GetUserList: 'user/getUserList', // 分页获取用户列表
+    SetUserAuthority: 'user/setUserAuthority', // 设置用户权限
+    DeleteUser: 'user/deleteUser', // 删除用户
+    SetUserInfo: 'user/setUserInfo', // 设置用户信息
 
 
 
