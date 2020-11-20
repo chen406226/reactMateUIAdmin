@@ -2,7 +2,7 @@ import React,{useState,useEffect} from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import API from '@/api'
-import { Button,ButtonGroup ,TextField,TablePagination,FormControl} from "@material-ui/core";
+import { Button,ButtonGroup,InputLabel,TextField,TablePagination,FormControl,Select,MenuItem} from "@material-ui/core";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -62,6 +62,13 @@ const styles = {
       width: '25ch',
     },
   },
+  searchButton:{
+    width: '12ch !important'
+  },
+  formControl: {
+    // margin: theme.spacing(1),
+    minWidth: 120,
+  },
   headImg: {
     width:'40px',
     height:'40px'
@@ -95,7 +102,11 @@ export default function AuthorityList() {
   const [total, setTotal] = useState(6);
   const [menuList, setmenuList] = useState([]);
   const [authorityOption, setauthorityOption] = useState([]);
-
+  const [apiObj, setapiObj] = useState({type:''});
+  const handleChange = (v)=>{
+    console.log(v)
+    setapiObj({...apiObj,[v.target.name]:v.target.value})
+  }
   const setStates = (v)=>{
     setPageO(Object.assign({},pageO,v))
   }
@@ -206,14 +217,32 @@ export default function AuthorityList() {
             <TextField id="standard-basic" label="路径" />
             <TextField id="filled-basic" label="描述"/>
             <TextField id="outlined-basic" label="api组"/>
-            <TextField id="ined-basic" label="请求"/>
+            <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-helper-label">请求方法</InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                value={apiObj.type}
+                name='type'
+                onChange={handleChange}
+                displayEmpty
+                className={classes.selectEmpty}
+              >
+                <MenuItem value="POST">创建POST</MenuItem>
+                <MenuItem value={'GET'}>查看GET</MenuItem>
+                <MenuItem value={'PUT'}>更新PUT</MenuItem>
+                <MenuItem value={'DELETE'}>删除DELETE</MenuItem>
+              </Select>
+            </FormControl>
+            <div classes={classes.searchButton}>
+              <Button variant="contained" color="primary">搜索</Button>
+            </div>
           </form>
         </Card>
       </GridItem>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
-            <Button className={classes.cardTitleWhite} onClick={addMenu} color="primary">新增用户</Button>
+            <Button className={classes.cardTitleWhite} onClick={addMenu} color="primary">新增api</Button>
           </CardHeader>
           <CardBody>
             <TableContainer>
