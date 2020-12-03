@@ -1,4 +1,4 @@
-import React, { useState, userEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from "react-hook-form";
 import {
   Button, Dialog, DialogActions, DialogContent, DialogContentText, IconButton,
@@ -16,7 +16,6 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import CSelect from 'components/CForm/CSelect.js'
 import { makeStyles } from '@material-ui/core/styles';
 import API from '@/api'
-
 
 const useStyles = makeStyles((theme)=>({
   table: {
