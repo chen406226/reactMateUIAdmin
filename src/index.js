@@ -70,6 +70,7 @@ class App extends Component {
     return (
       <Switch>
         <Route path="/admin" component={Admin} />
+        <Route path="/demo" component={Admin} />
         <Route path="/rtl" component={RTL} />
         <Route path="/login" component={Login} />
         <Redirect from="/" to="/admin/dashboard" />

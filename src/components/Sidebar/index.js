@@ -91,11 +91,11 @@ export default function Sidebar(props) {
   const classe = useStyle();
 
     const [expanded, setExpanded] = React.useState(false);
-    const [open, setOpen] = React.useState(true);
+    // const [open, setOpen] = React.useState(true);
 
-    const handleClick = () => {
-      setOpen(!open);
-    };
+    // const handleClick = () => {
+    //   setOpen(!open);
+    // };
     const handleChange = (panel) => (event, isExpanded) => {
       console.log('dsffs')
       setExpanded(isExpanded ? panel : false);
@@ -105,6 +105,11 @@ export default function Sidebar(props) {
   var links = (
     <List className={classes.list} component="nav">
       {routes.map((prop, key) => {
+        const [open, setOpen] = React.useState(true);
+
+        const handleClick = () => {
+          setOpen(!open);
+        };
         var activePro = " ";
         var listItemClasses;
         var covAcClas = classNames({
@@ -158,6 +163,7 @@ export default function Sidebar(props) {
                 </ListItem>
                 {
                   prop.children.map((item, keyss)=>{
+                    console.log(prop.path + item.path)
                     let childListItemClasses = classNames({
                       [" " + classes[color]]: activeRoute(prop.path + item.path)
                     });

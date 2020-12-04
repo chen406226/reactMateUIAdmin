@@ -37,6 +37,7 @@ const AdminApi = lazy(() => import(/* webpackChunkName: "AdminApi" */'./views/Ad
 const AdminDictionary = lazy(() => import(/* webpackChunkName: "AdminDictionary" */'./views/Admin/Dictionary.js'))
 const AdminUser = lazy(() => import(/* webpackChunkName: "AdminUser" */'./views/Admin/User.js'))
 const AdminOperation = lazy(() => import(/* webpackChunkName: "AdminOperation" */'./views/Admin/Operation.js'))
+const React17 = lazy(() => import(/* webpackChunkName: "AdminOperation" */ './views/Demo/React/Index.js'))
 import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
@@ -109,6 +110,21 @@ const dashboardRoutes = [
       rtlName: "لوحة القيادة",
       icon: Person,
       component: AdminOperation,
+      layout: "/admin"
+    }],
+    layout: "/admin"
+  },
+  {
+    path: "/demo",
+    name: "DEMO",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: Person,
+    children:[{
+      path: "/react",
+      name: "React17",
+      rtlName: "لوحة القيادة",
+      icon: Assignment,
+      component: React17,
       layout: "/admin"
     }],
     layout: "/admin"

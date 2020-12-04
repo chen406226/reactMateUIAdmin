@@ -11,7 +11,6 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/sidebar";
 // import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
-
 import routes from "@/routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
@@ -27,6 +26,9 @@ function getCR(rts){
     if (prop.layout === "/admin") {
       if (prop.children) {
         prop.children.map((item,index)=>{
+          if (item.path=='/react') {
+            console.log(item,'mmmmmmmmmm')
+          }
           list.push(
             <Route
             path={prop.path + item.path}
