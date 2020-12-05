@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+      // "outDir": "./dist/",  // 可以放开
+      "sourceMap": true,
+      // "noImplicitAny": true,
+      "noImplicitAny": false,
+      "module": "commonjs",
+      "allowJs": true,
+      "esModuleInterop" : true,
+      "allowSyntheticDefaultImports": true,
+      "target": "es5",
+      "jsx": "react"
+  },
+  // "include": [
+  //     "./src/**/*"
+  // ] // 可以放开
+}

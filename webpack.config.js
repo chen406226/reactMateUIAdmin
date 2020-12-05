@@ -36,6 +36,14 @@ module.exports = {
                 loader: 'happypack/loader?id=happyBabel',
             }
         },
+        {
+            test: /\.tsx?$/,
+            exclude: /node_modules/,
+            // use:['babel-loader']
+            use: {
+                loader: 'ts-loader',
+            }
+        },
          {
             test: /\.css$/,
             // exclude: /node_modules/,

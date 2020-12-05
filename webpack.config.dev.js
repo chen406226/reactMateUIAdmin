@@ -29,7 +29,7 @@ module.exports = merge(baseWebpackConfig, {
         publicPath: "/",
         quiet: false,
         hot: true,
-        port: 8000,
+        port: 8001,
         open:true,
         disableHostCheck: true,
         // historyApiFallback: {

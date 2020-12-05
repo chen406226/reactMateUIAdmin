@@ -24,6 +24,7 @@ import Admin from "./layouts/Admin.js";
 import RTL from "./layouts/RTL.js";
 import Login from "./layouts/Login.js";
 import {hist} from '@/utils/history.js'
+import Tablec from 'views/Demo/Table/Index.js'
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 
@@ -70,6 +71,7 @@ class App extends Component {
     return (
       <Switch>
         <Route path="/admin" component={Admin} />
+        <Route path="/table" component={Tablec} />
         <Route path="/demo" component={Admin} />
         <Route path="/rtl" component={RTL} />
         <Route path="/login" component={Login} />
