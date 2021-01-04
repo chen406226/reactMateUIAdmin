@@ -174,7 +174,7 @@ module.exports = {
             //     ? path.resolve(__dirname, 'src/constants/system-profile-prod.json')
             //     : path.resolve(__dirname, 'src/constants/system-profile-dev.json'),
         },
-        extensions: ['.js', '.jsx', 'css', 'less','.scss'],
+        extensions: ['.js', '.ts', '.tsx', '.jsx', 'css', 'less','.scss'],
     },
     optimization: {
         runtimeChunk: {
@@ -248,7 +248,7 @@ module.exports = {
                     reuseExistingChunk: true
                 }
             },
-            
+
         }
     },
 };

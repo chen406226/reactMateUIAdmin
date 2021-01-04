@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import UseStateC from './com/useState'
+import UseEffectC from './com/useEffect'
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -90,7 +91,7 @@ export default function SimpleTabs() {
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="UseState" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
+          <Tab label="UseEffect" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
@@ -98,7 +99,7 @@ export default function SimpleTabs() {
         <UseStateC></UseStateC>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <UseEffectC></UseEffectC>
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three
