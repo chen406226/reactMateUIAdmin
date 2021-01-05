@@ -74,29 +74,61 @@ export default function SimpleTabs() {
 				</AccordionSummary>
 				<AccordionDetails>
 					<div>
-						<p>1、函数组件能保存状态，但是对于异步请求，副作用的操作还是无能为力，所以React提供了useEffect来帮助开发者处理函数组件的副作用，在介绍新API之前，我们先看看类组件是怎么做的：</p>
-						<p>2、在class例子中，组件每隔1S更新组件状态，并且每次更新都会出发document.title的更新（副作用），而在组件卸载时修改document.title(类似清除)。</p>
-						<p>2、在例子中可以看到，一些重复的功能开发者需要在componentDidMount和componentDidUpdate重复编写，而如果使用useEffect则完全不一样</p>
-						<p>我们使用useEffect重写了上面的例子<strong>useEffect第一个参数接受一个函数，可以用来做一些副作用比如异步请求，修改外部参数等行为，而第二个参数称之为dependencies，是一个数组，如果数组中的值变化才会触发执行useEffect第一个阐述中的函数。返回值（如果有则在组件销毁或者调用前调用）</strong></p>
+						<p>1、上面介绍了useState、useEffect这两个最基本的API，接下来介绍的useContext是React帮你封装好的，用来处理多层级传递数据的方式，在以前组件树中，跨层级祖先组件想给子孙组件传递数据的时候，除了一层层props往下透传之外，我们还可以使用React Context API 来帮我们做这件事， 举个简单例子</p>
+						<p><pre>
+							{`
+								const { Provider, Consumer } = React.createContext(null)
+									function useUpdate(fn) {
+											// useRef 创建一个引用
+											const mounting = useRef(true)
+											useEffect(() => {
+													if (mounting.current) {
+															mounting.current = false
+													} else {
+															fn()
+													}
+											})
+									}
+							`}
+						</pre></p>
+						<p>2、</p>
+						<p><strong></strong></p>
 						<ul>
 							<li>比如第一个useEffect中，理解起来就是一旦count值发生改变，则修改document.title的值</li>
+							<li><pre>
+								{`
+										function useUpdate(fn) {
+												// useRef 创建一个引用
+												const mounting = useRef(true)
+												useEffect(() => {
+														if (mounting.current) {
+																mounting.current = false
+														} else {
+																fn()
+														}
+												})
+										}
+								`}
+							</pre></li>
 							<li>而第二个useEffect中传递一个空数组[],这种情况下只有在组件初始化或销毁的时候才会触发，用来代替componentDidMount和componentWillUnmount,慎用</li>
 							<li>还有一种情况，就是不传递第二个参数，也就是useEffect只接受了第一个函数参数，代表不监听任何参数变化，每次渲染DOM之后，都会执行useEffect中的函数。基于这个强大的hooks,我们可以模拟封装出其他生命周期函数，比如componentDidUpdate</li>
 							<li>
 								<pre>
-										{`
-												function useUpdate(fn) {
-														// useRef 创建一个引用
-														const mounting = useRef(true)
-														useEffect(() => {
-																if (mounting.current) {
-																		mounting.current = false
-																} else {
-																		fn()
-																}
-														})
-												}
-										`}
+									{`
+										const { Provider, Consumer } = React.createContext(null)
+										function Bar() {
+											return <Consumer>{color => <div>{color}</div>}</Consumer>
+										}
+													const mounting = useRef(true)
+													useEffect(() => {
+															if (mounting.current) {
+																	mounting.current = false
+															} else {
+																	fn()
+															}
+													})
+											}
+									`}
 								</pre>
 							</li>
 							<li>现在我们有了useState管理状态,useEffect处理副作用，异步逻辑，学会这两招足以应对大部分类组件的使用场景</li>
@@ -122,43 +154,21 @@ export default function SimpleTabs() {
 	);
 }
 
-interface cAppState {
-	count: any,
+
+const { Provider, Consumer } = React.createContext(null);
+function Bar() {
+	return <Consumer>{color => <div>{color}</div>}</Consumer>;
+}
+function Foo() {
+	return <Bar />;
 }
 
-class CApp extends React.Component <any, cAppState> {
-	timer: any
-	constructor(props) {
-		super(props);
-		this.state = {
-			count: 0
-		};
-	}
-	componentDidMount() {
-		const {count} = this.state
-		document.title = 'componentDidMount' + count
-		this.timer = setInterval(() => {
-			this.setState(({count}) => ({count: count + 1}))
-		}, 1000)
-	}
-	componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<cAppState>, snapshot?: any) {
-		const {count} = this.state
-		document.title = 'componentDidUpdate' + count
-	}
-	componentWillUnmount() {
-		document.title = 'componentWillUnmount'
-		clearInterval(this.timer)
-	}
-
-	render() {
-		const {count: count} = this.state;
-		return (
-			<div>
-				Count: {count}
-				<button onClick={() => clearInterval(this.timer)}>clear</button>
-			</div>
-		);
-	}
+function CApp () {
+	return (
+		<Provider value={"grey"}>
+			<Foo />
+		</Provider>
+	);
 }
 
 let timer

@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import UseStateC from './com/useState'
 import UseEffectC from './com/useEffect'
+import UseContextC from './com/useContext'
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -28,7 +29,8 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          {/*<Typography>{children}</Typography>*/}
+          {children}
         </Box>
       )}
     </div>
@@ -90,9 +92,14 @@ export default function SimpleTabs() {
       </Accordion>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="UseState" {...a11yProps(0)} />
-          <Tab label="UseEffect" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="UseState保存组件状态" {...a11yProps(0)} />
+          <Tab label="UseEffect处理副作用" {...a11yProps(1)} />
+          <Tab label="UseContext减少组件层级" {...a11yProps(2)} />
+          <Tab label="UseContext减少组件层级" {...a11yProps(3)} />
+          <Tab label="UseContext减少组件层级" {...a11yProps(4)} />
+          <Tab label="UseContext减少组件层级" {...a11yProps(5)} />
+          <Tab label="UseContext减少组件层级" {...a11yProps(6)} />
+          <Tab label="UseContext减少组件层级" {...a11yProps(7)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -102,7 +109,7 @@ export default function SimpleTabs() {
         <UseEffectC></UseEffectC>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <UseContextC></UseContextC>
       </TabPanel>
     </div>
   );

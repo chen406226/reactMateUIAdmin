@@ -24,7 +24,8 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          {/*<Typography>{children}</Typography>*/}
+          {children}
         </Box>
       )}
     </div>
@@ -85,7 +86,7 @@ export default function SimpleTabs() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <CApp/>  
+        <CApp/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <FApp/>
