@@ -75,79 +75,85 @@ export default function SimpleTabs() {
 				<AccordionDetails>
 					<div>
 						<p>1、上面介绍了useState、useEffect这两个最基本的API，接下来介绍的useContext是React帮你封装好的，用来处理多层级传递数据的方式，在以前组件树中，跨层级祖先组件想给子孙组件传递数据的时候，除了一层层props往下透传之外，我们还可以使用React Context API 来帮我们做这件事， 举个简单例子</p>
-						<p><pre>
+						<p><pre><code>
 							{`
 								const { Provider, Consumer } = React.createContext(null)
-									function useUpdate(fn) {
-											// useRef 创建一个引用
-											const mounting = useRef(true)
-											useEffect(() => {
-													if (mounting.current) {
-															mounting.current = false
-													} else {
-															fn()
-													}
-											})
-									}
+								function Bar(){
+									return <Consumer>{color => <div>{color}</div>}</Consumer>
+								}
+								function Foo(){
+									return <Bar/>
+								}
+								function App(){
+									return (<Provider value={'grey'}><Foo/></Provider>)
+								}
+							`}
+						</code>
+						</pre></p>
+						<p>2、通过React createContext的语法，在App组件中可以跨过Foo组件给Bar传递数据，而在React Hooks中，我们可以使用useContext进行改造</p>
+						<p><pre><code>
+							{`
+								const colorContext = React.createContext("gray");
+								function Bar2() {
+									const color = React.useContext(colorContext);
+									return <div>{color}</div>;
+								}
+								function Foo2() {
+									return <Bar2 />;
+								}
+								function App2() {
+									return (
+										<colorContext.Provider value={"red"}>
+											<Foo2 />
+										</colorContext.Provider>
+									);
+								}
+							`}
+						</code>
+						</pre></p>
+						<p>传递给useContext的是<strong>context</strong>而不是<strong>consumer</strong>，返回值即是想要透传的数据了。用法很简单。使用useContext可以解决Consumer多状态嵌套的问题</p>
+						<p><pre>
+							{`
+								function HeaderBar() {
+									return (<CurrentUser.Consumer>
+										{user => <Notifications.Consumer>
+											{notifications => <header>
+												Welcome back, {user.name}！
+												you have {notifications.length} notifications.
+											</header>}	
+										</Notifications.Consumer>}
+									</CurrentUser.Consumer>)
+								}
 							`}
 						</pre></p>
-						<p>2、</p>
-						<p><strong></strong></p>
-						<ul>
-							<li>比如第一个useEffect中，理解起来就是一旦count值发生改变，则修改document.title的值</li>
-							<li><pre>
-								{`
-										function useUpdate(fn) {
-												// useRef 创建一个引用
-												const mounting = useRef(true)
-												useEffect(() => {
-														if (mounting.current) {
-																mounting.current = false
-														} else {
-																fn()
-														}
-												})
-										}
-								`}
-							</pre></li>
-							<li>而第二个useEffect中传递一个空数组[],这种情况下只有在组件初始化或销毁的时候才会触发，用来代替componentDidMount和componentWillUnmount,慎用</li>
-							<li>还有一种情况，就是不传递第二个参数，也就是useEffect只接受了第一个函数参数，代表不监听任何参数变化，每次渲染DOM之后，都会执行useEffect中的函数。基于这个强大的hooks,我们可以模拟封装出其他生命周期函数，比如componentDidUpdate</li>
-							<li>
-								<pre>
-									{`
-										const { Provider, Consumer } = React.createContext(null)
-										function Bar() {
-											return <Consumer>{color => <div>{color}</div>}</Consumer>
-										}
-													const mounting = useRef(true)
-													useEffect(() => {
-															if (mounting.current) {
-																	mounting.current = false
-															} else {
-																	fn()
-															}
-													})
-											}
-									`}
-								</pre>
-							</li>
-							<li>现在我们有了useState管理状态,useEffect处理副作用，异步逻辑，学会这两招足以应对大部分类组件的使用场景</li>
-						</ul>
+						<p>而使用useContext则变得十分简洁，可读性更强且不会增加组件树深度</p>
+						<p><pre>
+							{`
+								function HeaderBar() {
+									const user = useContext(CurrentUser)
+									const notifications = useContext(Notifications)
+									return (<header>
+										Welcome back, {user.name}！
+										you have {notifications.length} notifications.
+									</header>)
+								}
+							`}
+						</pre></p>
 					</div>
 				</AccordionDetails>
 			</Accordion>
 
 			<AppBar position="static">
 				<Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-					<Tab label="类组件" {...a11yProps(0)} />
-					<Tab label="hooks" {...a11yProps(1)} />
+					<Tab label="第一种方式" {...a11yProps(0)} />
+					<Tab label="第二种方式" {...a11yProps(1)} />
 				</Tabs>
 			</AppBar>
 			<TabPanel value={value} index={0}>
 				<CApp/>
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-				<FApp/>
+				<App2/>
 			</TabPanel>
 
 		</div>
@@ -171,36 +177,18 @@ function CApp () {
 	);
 }
 
-let timer
-
-function FApp() {
-	const [count, setCount] = React.useState(0)
-
-	React.useEffect(() => {
-		document.title = 'componentDidMount' + count
-	},[count])
-
-	// React.useEffect(() => {
-	// 	document.title = 'componentDidUpdate' + count
-	// })
-
-	React.useEffect(() => {
-		timer = setInterval(() => {
-			setCount(prevCount => prevCount + 1)
-		}, 1000)
-		// 注意下这个顺序
-		// 告诉react在下次重新渲染组件之后，同时是下次执行上面setInterval之前调用
-		return ()=>{
-			document.title = 'coumponentWillUnmountEffect'
-			clearInterval(timer)
-		}
-	},[])
-
+const colorContext = React.createContext("gray");
+function Bar2() {
+	const color = React.useContext(colorContext);
+	return <div>{color}</div>;
+}
+function Foo2() {
+	return <Bar2 />;
+}
+function App2() {
 	return (
-		<div className="App">
-			Count: {count}
-			<button onClick={()=> clearInterval(timer)}>clear</button>
-		</div>
+		<colorContext.Provider value={"red"}>
+			<Foo2 />
+		</colorContext.Provider>
 	);
 }
-
