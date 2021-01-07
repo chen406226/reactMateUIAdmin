@@ -70,14 +70,21 @@ export default function SimpleTabs() {
 					aria-controls="panel1a-content"
 					id="panel1a-header"
 				>
-					<Typography className={classes.heading}>useEffect处理副作用</Typography>
+					<Typography className={classes.heading}>UseCallback 记忆函数</Typography>
 				</AccordionSummary>
 				<AccordionDetails>
 					<div>
-						<p>1、函数组件能保存状态，但是对于异步请求，副作用的操作还是无能为力，所以React提供了useEffect来帮助开发者处理函数组件的副作用，在介绍新API之前，我们先看看类组件是怎么做的：</p>
-						<p>2、在class例子中，组件每隔1S更新组件状态，并且每次更新都会出发document.title的更新（副作用），而在组件卸载时修改document.title(类似清除)。</p>
-						<p>2、在例子中可以看到，一些重复的功能开发者需要在componentDidMount和componentDidUpdate重复编写，而如果使用useEffect则完全不一样</p>
-						<p>我们使用useEffect重写了上面的例子<strong>useEffect第一个参数接受一个函数，可以用来做一些副作用比如异步请求，修改外部参数等行为，而第二个参数称之为dependencies，是一个数组，如果数组中的值变化才会触发执行useEffect第一个阐述中的函数。返回值（如果有则在组件销毁或者调用前调用）</strong></p>
+						<p>1、在类组件中我们经常犯下面这种错误：</p>
+						<p><pre>
+							{`
+								class App {
+									render(){
+										return (<SomeComponent style="{{fontSize: 12}}" doSomething="{() => {do()}"></SomeComponent>)
+									}
+								}
+							`}
+						</pre></p>
+						<p>这样写有什么坏处呢？一旦App组件的props或者状态改变了就会触发冲渲染，即使跟SomeComponent组件不相关，<strong>由于每次render都会产生新的style和doSometiong(因为重新render前后，style和somethi分别指向了不同的引用，)</strong>所以会导致Some</p>
 						<ul>
 							<li>比如第一个useEffect中，理解起来就是一旦count值发生改变，则修改document.title的值</li>
 							<li>而第二个useEffect中传递一个空数组[],这种情况下只有在组件初始化或销毁的时候才会触发，用来代替componentDidMount和componentWillUnmount,慎用</li>

@@ -93,11 +93,11 @@ export default function SimpleTabs() {
       </Accordion>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="UseState保存组件状态" {...a11yProps(0)} />
-          <Tab label="UseEffect处理副作用" {...a11yProps(1)} />
-          <Tab label="UseContext减少组件层级" {...a11yProps(2)} />
+          <Tab label="UseState" {...a11yProps(0)} />
+          <Tab label="UseEffect" {...a11yProps(1)} />
+          <Tab label="UseContext" {...a11yProps(2)} />
           <Tab label="UseReducer" {...a11yProps(3)} />
-          <Tab label="UseContext减少组件层级" {...a11yProps(4)} />
+          <Tab label="UseCallback" {...a11yProps(4)} />
           <Tab label="UseContext减少组件层级" {...a11yProps(5)} />
           <Tab label="UseContext减少组件层级" {...a11yProps(6)} />
           <Tab label="UseContext减少组件层级" {...a11yProps(7)} />

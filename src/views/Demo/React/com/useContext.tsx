@@ -70,7 +70,7 @@ export default function SimpleTabs() {
 					aria-controls="panel1a-content"
 					id="panel1a-header"
 				>
-					<Typography className={classes.heading}>useState 保存组件状态</Typography>
+					<Typography className={classes.heading}>useContext减少组件层级</Typography>
 				</AccordionSummary>
 				<AccordionDetails>
 					<div>
