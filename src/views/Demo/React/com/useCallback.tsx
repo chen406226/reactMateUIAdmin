@@ -84,11 +84,33 @@ export default function SimpleTabs() {
 								}
 							`}
 						</pre></p>
-						<p>这样写有什么坏处呢？一旦App组件的props或者状态改变了就会触发冲渲染，即使跟SomeComponent组件不相关，<strong>由于每次render都会产生新的style和doSometiong(因为重新render前后，style和somethi分别指向了不同的引用，)</strong>所以会导致Some</p>
+						<p>这样写有什么坏处呢？一旦App组件的props或者状态改变了就会触发冲渲染，即使跟SomeComponent组件不相关，<strong>由于每次render都会产生新的style和doSometiong(因为重新render前后，style和somethi分别指向了不同的引用，)</strong>所以会导致SomeComeComponent重新渲染，倘若SomeComponent是一个大型的组件树，这样的VirTual Dom的比较显然是很浪费的，解决的办法也很简单，将参数抽离成变量</p>
+						<p><pre>
+							{`
+								const fontSizeStyle = {fontSize: 14}
+								class App {
+									doSomething = () => {}
+									render(){
+										return (<SomeComponent style={fontSizeStyle} doSomething={this.doSomething}></SomeComponent>)
+									}
+								}
+							`}
+						</pre></p>
+						<p>在类组件中，我们还可以通过this这个对象来存储函数，而在函数组件中没有办法进行挂载了。所以函数组件在每次渲染的时候如果有传递函数的话都会重新渲染子组件。</p>
+						<p><pre>
+							{`
+								function App() {
+									const handleClick = () => {}
+									render(){
+										return (<SomeComponent onClick={handleClick}>Click Me</SomeComponent>)
+									}
+								}
+							`}
+						</pre></p>
 						<ul>
-							<li>比如第一个useEffect中，理解起来就是一旦count值发生改变，则修改document.title的值</li>
-							<li>而第二个useEffect中传递一个空数组[],这种情况下只有在组件初始化或销毁的时候才会触发，用来代替componentDidMount和componentWillUnmount,慎用</li>
-							<li>还有一种情况，就是不传递第二个参数，也就是useEffect只接受了第一个函数参数，代表不监听任何参数变化，每次渲染DOM之后，都会执行useEffect中的函数。基于这个强大的hooks,我们可以模拟封装出其他生命周期函数，比如componentDidUpdate</li>
+							<li></li>
+							<li></li>
+							<li></li>
 							<li>
 								<pre>
 									{`
