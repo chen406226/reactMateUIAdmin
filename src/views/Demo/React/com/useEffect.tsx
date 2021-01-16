@@ -101,6 +101,36 @@ export default function SimpleTabs() {
 							</li>
 							<li>现在我们有了useState管理状态,useEffect处理副作用，异步逻辑，学会这两招足以应对大部分类组件的使用场景</li>
 						</ul>
+						<h2>useLayoutEffect 同步执行副作用</h2>
+						<p>大部分情况下，使用useEffect就可以帮我们处理组件的副作用，但是如果想要同步调用一些副作用，比如对DOM的操作，就需要使用useLayoutEffect,useLayoutEffect中的副作用会在DOM更新之后同步执行</p>
+						<p><pre>
+							{`
+								function App() {
+									const [width, setWidth] = useState(0)
+									useLayoutEffect(()=>{
+										const title = document.querySelector('#title')
+										const titleWidth = title.getBoundingClientRect().width
+										console.log('useLayoutEffect')
+										if (width != titleWidth) {
+											setWidth(titleWidth)
+										}
+									})
+									useEffect(()=>{console.log('useEffect')})
+									return (<div>
+										<h1 id="title">hello</h1>
+										<h1>{width}</h1>
+									</div>)
+								}
+							`}
+						</pre></p>
+						<p>在上面的例子中，useLayoutEffect会在render,DOM更新之后同步触发函数，会优于useEffect异步触发函数。</p>
+						<h3>useEffect和useLayoutEffect有什么区别</h3>
+						<p><strong>简单来说就是调用时机不同，useLayoutEffect和原来componentDidMount&componentDidUpdate一致，在react完成DOM更新后马上同步调用的代码，会阻塞页面渲染。而useEffect是会在整个页面渲染完才会调用的代码</strong></p>
+						<p>官方建议优先使用useEffect</p>
+						<p><pre>However， <strong>we recommend starting with useEffect first and only trying useLayoutEffect if that causes a problem.</strong></pre></p>
+						<p>在实际使用时如果想避免<strong>页面抖动</strong>（在useEffect里修改DOM很有可能出现）的话，可以把需要操作DOM的代码放在useLayoutEffect。关于适用UseEffect导致页面抖动，参考git仓库示例</p>
+						<p>不过useLayoutEffect在服务端渲染时会出现一个warning，要消除的话得用useEffect代替或者推迟渲染时机。</p>
+						<p>其函数签名与useEffect相同，但他会在所有的DOM变更之后同步调用effect。可以使用它来读取DOM布局并同步出发重渲染。在浏览器执行绘制前，useLayoutEffect内部的更新计划将被同步刷新。尽可能使用标准的useEffect以避免视觉更新</p>
 					</div>
 				</AccordionDetails>
 			</Accordion>
@@ -170,9 +200,11 @@ function FApp() {
 		document.title = 'componentDidMount' + count
 	},[count])
 
-	// React.useEffect(() => {
-	// 	document.title = 'componentDidUpdate' + count
-	// })
+	React.useEffect(() => {
+		// document.title = 'componentDidUpdate' + count
+		console.log('this is effect')
+	})
+	React.useLayoutEffect(()=>{console.log('this is useLayoutEffect')})
 
 	React.useEffect(() => {
 		timer = setInterval(() => {

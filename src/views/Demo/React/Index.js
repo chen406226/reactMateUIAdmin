@@ -9,6 +9,10 @@ import UseStateC from './com/useState'
 import UseEffectC from './com/useEffect'
 import UseContextC from './com/useContext'
 import UseReduerC from './com/useReducer'
+import UseCallbackC from './com/useCallback'
+import UseMemoC from './com/useMemo'
+import UseRefC from './com/useRef'
+import UseNotHooksC from './com/notHooks'
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -98,9 +102,9 @@ export default function SimpleTabs() {
           <Tab label="UseContext" {...a11yProps(2)} />
           <Tab label="UseReducer" {...a11yProps(3)} />
           <Tab label="UseCallback" {...a11yProps(4)} />
-          <Tab label="UseContext减少组件层级" {...a11yProps(5)} />
-          <Tab label="UseContext减少组件层级" {...a11yProps(6)} />
-          <Tab label="UseContext减少组件层级" {...a11yProps(7)} />
+          <Tab label="UseMemo" {...a11yProps(5)} />
+          <Tab label="UseRef" {...a11yProps(6)} />
+          <Tab label="UseNotHooks" {...a11yProps(7)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -114,6 +118,14 @@ export default function SimpleTabs() {
       </TabPanel>
       <TabPanel value={value} index={3}>
         <UseReduerC></UseReduerC>
+      </TabPanel>      <TabPanel value={value} index={4}>
+        <UseCallbackC></UseCallbackC>
+      </TabPanel>      <TabPanel value={value} index={5}>
+        <UseMemoC></UseMemoC>
+      </TabPanel>      <TabPanel value={value} index={6}>
+        <UseRefC></UseRefC>
+      </TabPanel>      <TabPanel value={value} index={7}>
+        <UseNotHooksC></UseNotHooksC>
       </TabPanel>
     </div>
   );

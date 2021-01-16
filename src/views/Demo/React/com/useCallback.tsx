@@ -101,35 +101,25 @@ export default function SimpleTabs() {
 							{`
 								function App() {
 									const handleClick = () => {}
-									render(){
-										return (<SomeComponent onClick={handleClick}>Click Me</SomeComponent>)
-									}
+									return (<SomeComponent onClick={handleClick}>Click Me</SomeComponent>)
 								}
 							`}
 						</pre></p>
-						<ul>
-							<li></li>
-							<li></li>
-							<li></li>
-							<li>
-								<pre>
-									{`
-										function useUpdate(fn) {
-											// useRef 创建一个引用
-											const mounting = useRef(true)
-											useEffect(() => {
-												if (mounting.current) {
-													mounting.current = false
-												} else {
-													fn()
-												}
-											})
-										}
-									`}
-								</pre>
-							</li>
-							<li>现在我们有了useState管理状态,useEffect处理副作用，异步逻辑，学会这两招足以应对大部分类组件的使用场景</li>
-						</ul>
+						<p>这里多说一句，一般把<strong>函数式组件理解为class组件render函数的语法糖</strong>所以每次重新渲染的时候，函数式组件内部所有的代码都会重新执行一遍。所以上述代码中每次render，handleClick都会是一个新的引用，所以也就是说传递给SomeComponent组件的props.onClick一直在变（因为每次都是一个新引用），所以才会说这种情况下，函数组件在每次渲染的时候如果有传递函数的话都会重渲染子组件。</p>
+						<p>而有了useCallback就不一样了，你可以通过useCallBack获得一个技艺后的函数</p>
+						<p><pre>
+							{`
+								function App() {
+									const memoizedHandler = useCallback(
+									  () => {console.log()},
+									  [], // 空数组代表无论什么情况下都不会发生变化
+									);
+									return (<SomeComponent onClick={memoizedHandler}>Click Me</SomeComponent>)
+								}
+							`}
+						</pre></p>
+						<p>老规矩，第二个参数传入一个数组，数组中的每一项一旦值或者引用发生改变，useCallback就会重新返回一个新的记忆函数提供给后面进行渲染。</p>
+						<p>这样只要子组件继承了PureComponent或者使用React.memo就可以有效避免不必要的VDOM渲染。</p>
 					</div>
 				</AccordionDetails>
 			</Accordion>
